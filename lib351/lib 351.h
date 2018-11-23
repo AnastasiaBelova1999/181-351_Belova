@@ -1,29 +1,21 @@
 #pragma once
-#include <ostream>
-class dynamic_matrix
+class matrix
 {
 private:
-   int rows;
-   int columns;
-   int *matr;
+	int **first_matr;
+	int stolb;
+	int strok;
 public:
-	dynamic_matrix();
-	~dynamic_matrix();
-	bool summMatrix(dynamic_matrix matr2);
-	bool multMatrix(dynamic_matrix matr2);
-	int getElem(int row, int col);
-	int getRows() {
-		return rows;
-	}
-	int getColumns() {
-		return columns;
-	}
-
-	bool input();
-	bool print();
-	void transp();
-
-	friend dynamic_matrix operator + (const dynamic_matrix & A, dynamic_matrix & B);
-	friend dynamic_matrix operator - (const dynamic_matrix & A, dynamic_matrix & B);
-	friend dynamic_matrix operator * (const dynamic_matrix & A, dynamic_matrix & B);
-	friend dynamic_matrix operator << (const dynamic_matrix & A, dynamic_matrix & B);
+	bool correx(int a, int b);
+	virtual bool input();
+	virtual bool print();
+	bool summMatrix(matrix matr2);
+	bool multMatrix(matrix matr2);
+	int getElem(int st, int sl);
+	bool transp();
+	int getStrok();
+	int getStolb();
+	virtual bool multiplication(int number);
+	matrix();
+	~matrix();
+};

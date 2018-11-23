@@ -1,171 +1,169 @@
 #include "stdafx.h"
 #include <iostream>
 #include "lib 351.h"
-
-
-int func1(double p1, char p2)
+matrix::matrix()
 {
-	return p1+p2;
 }
-class dynamic_matrix
+matrix::~matrix()
 {
-private:
-	int rows;
-	int columns;
-	int *matr;
-public:
-	dynamic_matrix();
-	~dynamic_matrix();
-	bool summMatrix(dynamic_matrix matr2);
-	bool multMatrix(dynamic_matrix matr2);
-	int getElem(int row, int col);
-	int getRows() {
-		return rows;
-	}
-	int getColumns() {
-		return columns;
-	}
 
-	bool input();
-	bool print();
-	void transp();
-
-	friend dynamic_matrix operator + (const dynamic_matrix & A, dynamic_matrix & B);
-	friend dynamic_matrix operator - (const dynamic_matrix & A, dynamic_matrix & B);
-	friend dynamic_matrix operator * (const dynamic_matrix & A, dynamic_matrix & B);
-	friend dynamic_matrix operator << (const dynamic_matrix & A, dynamic_matrix & B);
+}
+int matrix::getStrok() {
+	return strok;
 };
-
-dynamic_matrix::dynamic_matrix()
+int matrix::getStolb() {
+	return stolb;
+}
+bool matrix::multiplication(int number)
 {
-
-};
-dynamic_matrix:: ~dynamic_matrix()
-{
-
-};
-dynamic_matrix operator + (const dynamic_matrix & r, dynamic_matrix & l)
-{
-	if (r.rows == l.rows && l.columns == r.columns)
+	for (int stroki = 0; stroki < strok; stroki++)
 	{
-		dynamic_matrix res;
-		res.columns = r.columns;
-		res.rows = l.rows;
-		//res.matr = new double[res.rows * res.columns];
-		for (int i = 0; i < r.rows; i++)
+		for (int stolbs = 0; stolbs < stolb; stolbs++)
 		{
-			for (int j = 0; j < l.columns; j++)
-			{
-				res.matr[i + j] = r.matr[i*res.columns + j] + l.matr[i*res.columns + j];
-			}
-
-		}
-		return res;
-	}
-
-	else
-		return l;
-};
-dynamic_matrix operator - (const dynamic_matrix & r, dynamic_matrix & l)
-{
-	if (r.rows == l.rows && l.columns == r.columns)
-	{
-		dynamic_matrix res;
-		res.columns = r.columns;
-		res.rows = l.rows;
-		//res.matr = new double[res.rows * res.columns];
-		for (int i = 0; i < r.rows; i++)
-		{
-			for (int j = 0; j < l.columns; j++)
-			{
-				res.matr[i + j] = r.matr[i*res.columns + j] - l.matr[i*res.columns + j];
-			}
-
-		}
-		return res;
-	}
-
-	else
-		return l;
-
-};
-dynamic_matrix operator * (const dynamic_matrix & l, dynamic_matrix & r)
-{
-	if (r.columns == l.rows)
-	{
-		dynamic_matrix res;
-		res.columns = r.columns;
-		res.rows = l.rows;
-		res.matr = new int[res.rows * res.columns];
-		for (int i = 0; i < l.rows; i++)
-		{
-			for (int j = 0; j < r.columns; j++)
-			{
-				int sum = 0;
-				for (int k = 0; k < r.columns; k++)
-				{
-					sum += l.matr[i * l.rows + k] * r.matr[k * l.rows + j];
-					res.matr[i*l.rows + j] = sum;
-				}
-			}
-		}
-		for (int i = 0; i < l.rows; i++)
-		{
-			for (int j = 0; j < r.columns; j++)
-			{
-				std::cout << res.matr[i*r.columns + j];
-			}
-			std::cout << std::endl << "Done" << std::endl;
-			return res;
+			first_matr[stroki][stolbs] *= number;
 		}
 	}
-	else
-	{
-		std::cout << std::endl << "Error" << std::endl;
-		return l;
-	}
-
-};
- /*std::ostream & operator << (std::ostream & os, dynamic_matrix & r)
-{
-	for (int i = 0; i < r.rows; i++)
-	{
-		for (int j = 0; j < l.columns; j++)
-		{
-			os << r.matr[i * r.columns + j] << ' ';
-		}
-		os << std::endl;
-	}
-	return os;
-}*/
-bool dynamic_matrix::input()
-{
-	std::cout << "Insert rows";
-	std::cin >> rows;
-	std::cout << "Insert columns";
-	std::cin >> columns;
-	std::cout << "Insert matrix's elements";
-	matr = new int[rows * columns];
-	for (int i = 0; i < rows; i++)
-	{
-		for (int j = 0; j < columns; j++)
-		{
-			std::cin >> matr[i * columns + j];
-		}
-	}
-	std::cout << std::endl << "Done";
 	return true;
 }
-bool dynamic_matrix::print()
-{
-	std::cout << std::endl << "Printing matrix... \n";
-	for (int i = 0; i < rows; i++)
-	{
-		for (int j = 0; j < columns; j++)
-		{
-			std::cout << matr[i * columns + j] << ' ';
-		}
-		std::cout << std::endl;
+int matrix::getElem(int st, int sl) {
+	if ((0 <= st < stolb) && (0 <= sl < strok)) {
+		return first_matr[st][sl];
 	}
+	std::cout << "error";
+	return -1;
+}
+bool matrix::transp()
+{
+	int time_matr[10][10] = { 0 };
+
+	for (int stroki = 0; stroki < strok; stroki++)
+	{
+		for (int stolbs = 0; stolbs < stolb; stolbs++)
+		{
+			time_matr[stolbs][stroki] = first_matr[stroki][stolbs];
+		}
+	}
+	delete[] first_matr;
+	first_matr = new int*[stolb];
+	for (int i = 0; i < stolb; i++)
+	{
+		first_matr[i] = new int[strok];
+	}
+	for (int stroki = 0; stroki < stolb; stroki++)
+	{
+		for (int stolbs = 0; stolbs < strok; stolbs++)
+		{
+			first_matr[stroki][stolbs] = time_matr[stroki][stolbs];
+		}
+
+	}
+
+	int c = stolb;
+	stolb = strok;
+	strok = c;
+	return true;
+}
+bool matrix::correx(int a, int b) {
+	if ((1 <= a <= 10) && (1 <= b <= 10))
+	{
+		return true;
+	}
+	return false;
+};
+bool matrix::print() {
+	std::cout << "\n";
+	for (int i = 0; i < strok; i++)
+	{
+		for (int j = 0; j < stolb; j++)
+		{
+			std::cout << first_matr[i][j] << "\t";
+		}
+		std::cout << "\n";
+	}
+	std::cout << "__________________________________________" << "\n";
+	return true;
+}
+bool matrix::input() {
+	int stroki;
+	int stolbs;
+	std::cout << "input number of lines ";
+	std::cin >> stroki;
+	std::cout << "input number of rows ";
+	std::cin >> stolbs;
+	if (!correx(stroki, stolbs)) {
+		std::cout << "wrong";
+		return false;
+	}
+	first_matr = new int*[stroki];
+	for (int i = 0; i < stroki; i++)
+	{
+		first_matr[i] = new int[stolbs];
+	}
+	for (int i = 0; i < stroki; i++)
+	{
+		for (int j = 0; j < stolbs; j++)
+		{
+			std::cout << "input element " << (i + 1) << " " << (j + 1) << "\t";
+
+			std::cin >> first_matr[i][j];
+
+			std::cout << "\n";
+		}
+		stolb = stolbs;
+		strok = stroki;
+	};
+}
+bool matrix::summMatrix(matrix math2) {
+
+	if ((strok != math2.strok) || (stolb != math2.stolb)) {
+		return false;
+	}
+	for (int i = 0; i < strok; i++)
+	{
+		for (int j = 0; j < stolb; j++)
+		{
+			first_matr[i][j] += math2.first_matr[i][j];
+		}
+	}
+	return true;
+
+};
+bool matrix::multMatrix(matrix math2) {
+	if (stolb != math2.strok) {
+		return false;
+	};
+	int time_matr1[10][10] = { 0 };
+	int c = 0;
+	int b = 0;
+	for (int strok1 = 0; strok1 < strok; strok1++)
+	{
+
+		for (int stolb2 = 0; stolb2 < stolb; stolb2++)
+		{
+			for (int Summ = 0; Summ < stolb; Summ++)
+			{
+				b = math2.first_matr[strok1][Summ];
+				c += first_matr[strok1][Summ] * b;
+			}
+
+			time_matr1[strok1][stolb2] = c;
+			c = 0;
+		}
+	}
+	delete[] first_matr;
+	first_matr = new int*[strok];
+	stolb = math2.stolb;
+	for (int i = 0; i < stolb; i++)
+	{
+		first_matr[i] = new int[strok];
+	}
+	for (int stroki = 0; stroki < strok; stroki++)
+	{
+		for (int stolbs = 0; stolbs < stolb; stolbs++)
+		{
+			first_matr[stroki][stolbs] = time_matr1[stroki][stolbs];
+		}
+	}
+
 	return true;
 }
