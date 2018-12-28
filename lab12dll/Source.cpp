@@ -23,7 +23,7 @@ https://github.com/curl/curl.git https://github.com/curl/curl
 1. Запустить от учётки админа консоль разработчика VS (x64 Native tools)
 2. С помощью CD /D <путь> перейти в папку curl
 3. Выполнить buildconf.bat (команда buildconf) - предварительные настройки переменных среды и генерация необходимых файлов
-4. Перейти с помощью CD в winbuild
+4. Перейти с помощью CD в winbuild\
 5. Выполнить строку из файла справки BUILD.WINDOWS.txt
 */
 
