@@ -18,7 +18,7 @@
     <ClCompile Include="Source.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Source1.cpp">
+    <ClCompile Include="tree.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

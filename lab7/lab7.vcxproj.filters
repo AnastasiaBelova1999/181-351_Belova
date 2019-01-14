@@ -20,9 +20,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="lab7.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
