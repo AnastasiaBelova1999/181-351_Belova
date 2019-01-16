@@ -3,7 +3,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include <iostream>
-#include <stdio>
 #include <openssl/conf.h> // функции, структуры и константы настройки OpenSSL
 #include <openssl/conf.h>
 #include <openssl/evp.h> // сами криптогрфические функции https://wiki.openssl.org/index.php/EVP
@@ -48,8 +47,7 @@ int main()
 		}
 	};
 
-	unsigned char plaintext[256]; //=
-		//(unsigned char *)"EVP_EncryptUpdate() encrypts inl bytes from the buffer in and writes the encrypted version to out";// исходный текст
+	unsigned char *plaintext = (unsigned char *)"Some text";
 	int plaintext_len = strlen((char *)plaintext); // длина текста
 	unsigned char *key = (unsigned char *)"0123456789"; // пароль (ключ)
 	unsigned char *iv = (unsigned char *)"0123456789012345"; // инициализирующий вектор, рандомайзер
@@ -71,41 +69,20 @@ int main()
 		iv); // рандомайзер (случайный начальный вектор)
 
 			 // 4. САМ ПРОЦЕСС ШИФРОВАНИЯ - ФУКНЦИЯ EVP_EncryptUpdate
-	ifstream t1("t1.txt", fstream::binary);
-	ofstream t2("t2.txt", fstream::binary);
-	//t1.open("t1.txt",ios::in, ios::binary);
-	//if (!t1.is_open()) { cout << "t1 not found" << endl; }
-	//t2 open("t2.txt", ios::out, ios::binary  );
-	//if (!t2.is_open()) cout << "t2 not found" << endl;
 	int len;
-	while (!t1.eof())
-	{
-		t1.getline(plaintext, 256);
-			//plaintext_len = fread(plaintext, 1, 256, t1);
-			//if (plaintext_len <= 0) ;
-
-			EVP_EncryptUpdate(ctx, // объект с настройками
-				cryptedtext, // входной параметр: ссылка, куда помещать зашифрованные данные
-				&len, // выходной параметр: длина полученного шифра
-				plaintext, // входной параметр: что шифровать
-				plaintext_len); // входной параметр : длина входных данных
-			//fwrite(cryptedtext, 1, len, t2);
-		t2 << cryptedtext;
-	}
+	EVP_EncryptUpdate(ctx, cryptedtext, &len, plaintext, plaintext_len);//собственно, шифрование
 	int cryptedtext_len = len;
+
 
 	// 5. Финализация процесса шифрования
 	// необходима, если последний блок заполнен данными не полностью
-	EVP_EncryptFinal_ex(ctx, cryptedtext + len, &len);
+	EVP_DecryptFinal_ex(ctx, cryptedtext + len, &len);
 	cryptedtext_len += len;
-	fwrite(cryptedtext, 1, cryptedtext_len, t2);
+
 
 	// 6. Удаление структуры
 	EVP_CIPHER_CTX_free(ctx);
-	//fclose(t1);
-	//fclose(t2);
-	t1.close();
-	t2.close();
+
 	// вывод зашифрованных данных
 	for (int i = 0; i < cryptedtext_len; i++)
 	{
@@ -134,23 +111,63 @@ int main()
 	EVP_CIPHER_CTX_free(ctx);
 	decryptedtext[dectypted_len] = '\0';
 	cout << decryptedtext << endl;
+	fstream t1, t2;
+	t1.open("t1.txt", fstream::in | fstream::binary);
+	t2.open("t2.txt", fstream::out | fstream::binary);
+	char buffer1[256] = { 0 };
+	char * buffer2[256] = { 0 };
+	//t1.open("t1.txt",ios::in, ios::binary);
+	//if (!t1.is_open()) { cout << "t1 not found" << endl; }
+	//t2 open("t2.txt", ios::out, ios::binary  );
+	//if (!t2.is_open()) cout << "t2 not found" << endl;
+	len = 0;
+	ctx = EVP_CIPHER_CTX_new();
+	EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv);
+	t1.read(buffer1, 256);
+	while (t1.gcount() > 0)//пока в файле что-то есть
+	{
+		EVP_EncryptUpdate(ctx, // объект с настройками
+			(unsigned char *)buffer2, // входной параметр: ссылка, куда помещать зашифрованные данные
+			&len, // выходной параметр: длина полученного шифра
+			(unsigned char *)buffer1, // входной параметр: что шифровать
+			plaintext_len); // входной параметр : длина входных данных
+		//fwrite(cryptedtext, 1, len, t2);
+		t2.write((const char*)buffer2, len);
+		t1.read(buffer1, 256);
+	}
+	EVP_EncryptFinal_ex(ctx, (unsigned char *)buffer2, &len);
+	t2.write((const char *)buffer2, len);// записали это в фаил
+	t2.close();
+	t1.close();
+	memset(buffer1, 0, sizeof(char) * 256);
+	memset(buffer2, 0, sizeof(char) * 256);
+	//rashifrovka
+	fstream t3, t4;
+	t3.open("t2.txt", fstream::in | fstream::binary);
+	t4.open("t3.txt", fstream::out | fstream::binary);
+	ctx = EVP_CIPHER_CTX_new();
 
-	// --- шифрование файла
-	// производится точно так же, но порциями, в цикле
-	// в цикле
-	/*
-		1) открытие файлов и настройка параметров OpenSSL
-		2) считывание первого блока
-		3) while(считанный_фрагмент > 0)
-		{
-			4) шифрование считанного
-			5) запись зашифрованного массива в файл
-			6) считывание следующего фрагмента
-		}
-		7) применение финализирующей фукнции
-		8) запись финализирующего блока в файл
-		9) закрытие файлов
-	*/
-	getchar();
+	EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv);
+
+	t3.read(buffer1, 256);
+	while (t3.gcount() > 0)//пока в файле что-то есть
+	{
+		EVP_DecryptUpdate(ctx, // объект с настройками
+			(unsigned char *)buffer2, // входной параметр: ссылка, куда помещать зашифрованные данные
+			&len, // выходной параметр: длина полученного шифра
+			(unsigned char *)buffer1, // входной параметр: что шифровать
+			plaintext_len); // входной параметр : длина входных данных
+		//fwrite(cryptedtext, 1, len, t2);
+		t4.write((const char*)buffer2, len);
+		t3.read(buffer1, 256);
+	}
+
+	EVP_DecryptFinal_ex(ctx, (unsigned char *)buffer2, &len); //если в первый раз у нас была шлифовка пивком, то тут получается зачистка пивком? надо подумать
+	t4.write((const char *)buffer2, len);
+
+	t4.close();
+	t3.close();
+
+	system("pause");
 	return 0;
 }
