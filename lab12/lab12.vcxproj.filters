@@ -15,11 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\lab12.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
+    <Xml Include="..\..\..\..\Downloads\haarcascade_frontalface_alt.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\..\..\..\Downloads\haarcascade_frontalface_alt.xml" />
+    <ClCompile Include="..\..\..\..\Downloads\source.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
