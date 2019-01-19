@@ -142,7 +142,7 @@ int main()
 
 	EVP_CIPHER_CTX_free(ctx);
 	deshef_output.write((char*)decryptedtext, len);
-	deshef_output.close();//закрываем файлы
+	deshef_output.close();
 	deshef_input.close();
 	
 
