@@ -68,12 +68,13 @@ int main()
 	char str[256];
 	int len = 0;
 	int cryptedtext_len = len;
-	ifstream input("input.txt", std::fstream::in, std::fstream::binary);
+	ifstream input("input.txt", std::fstream::in, std::fstream::binary);//in-только чтение
 	std::fstream output;
-	output.open("out.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
+	output.open("out.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);//out-запись,
+	//trunc-удалить содержимое файла, если он существует
 
-	input.read(str, 256);
-	while (input.gcount() > 0)
+	input.read(str, 256);// считывание из бинарного файла
+	while (input.gcount() > 0)//цикл выполняется, пока в файле что-то есть
 
 	{
 		EVP_EncryptUpdate(ctx, // объект с настройками
@@ -83,7 +84,7 @@ int main()
 		// входной параметр: что шифровать
 		// входной параметр : длина входных данных
 		cryptedtext_len = len;
-		output.write((char *)cryptedtext, len);
+		output.write((char *)cryptedtext, len);//запись в файл шифрованного текста
 		input.read(str, 256);
 	}
 
@@ -124,7 +125,7 @@ int main()
 	std::fstream deshef_output;
 	deshef_output.open("deasd_output.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
 	char str2[256];
-	deshef_input.read(str2, 256);
+	deshef_input.read(str2, 256);//считывание из бинарного файла
 	while (deshef_input.gcount() > 0)
 	{
 		EVP_DecryptUpdate(ctx,
@@ -141,7 +142,7 @@ int main()
 
 	EVP_CIPHER_CTX_free(ctx);
 	deshef_output.write((char*)decryptedtext, len);
-	deshef_output.close();
+	deshef_output.close();//закрываем файлы
 	deshef_input.close();
 	
 
